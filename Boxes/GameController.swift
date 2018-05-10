@@ -209,8 +209,6 @@ class GameController: UIViewController {
         isMenu = false
         isPlaying = true
         isPaused = false
-
-        currentStage = stages[Int(arc4random_uniform(UInt32(stages.count)))]
         
         repeat {
 
@@ -221,6 +219,8 @@ class GameController: UIViewController {
         pastStageIndex = currentStageIndex
 
         currentStage = stages[currentStageIndex]
+        
+        currentStage.rotateStage()
         
         player.setup(stage: currentStage)
         goal.setup(stage: currentStage)
@@ -622,6 +622,8 @@ class GameController: UIViewController {
         pastStageIndex = currentStageIndex
         
         currentStage = stages[currentStageIndex]
+        
+        currentStage.rotateStage()
         
         player.setup(stage: currentStage)
         goal.setup(stage: currentStage)
