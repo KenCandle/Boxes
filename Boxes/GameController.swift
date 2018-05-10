@@ -171,7 +171,7 @@ class GameController: UIViewController {
         
         scoreButton.setTitle("", for: .normal)
         
-        progressView.setProgress(1, animated: false)
+        timerView.setProgress(progress: 1)
         
         canTimerRun = true
     }
@@ -227,7 +227,7 @@ class GameController: UIViewController {
         
         time = 0
         
-        progressView.setProgress(1, animated: false)
+        timerView.setProgress(progress: 1)
     }
     
     lazy var retryButton: UIButton = {
@@ -383,15 +383,6 @@ class GameController: UIViewController {
         return view
     }()
     
-    var progressView: UIProgressView = {
-        let view = UIProgressView(progressViewStyle: .bar)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.setProgress(1, animated: false)
-        view.trackTintColor = UIColor.black
-        view.tintColor = lightColor
-        return view
-    }()
-    
     var touchView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.clear
@@ -423,7 +414,7 @@ class GameController: UIViewController {
                     handleGameOver()
                 }
                 
-                progressView.setProgress(Float(1 - (time / timeForStage)), animated: true)
+                timerView.setProgress(progress: 1 - (time / timeForStage))
             }
             
             player.isSafe = false
@@ -632,7 +623,7 @@ class GameController: UIViewController {
         
         time = 0
 
-        progressView.setProgress(1, animated: false)
+        timerView.setProgress(progress: 1)
     }
     
     // TOUCHES
@@ -772,7 +763,8 @@ class GameController: UIViewController {
         view.addSubview(bottomBorderView)
         view.addSubview(leftBorderView)
         view.addSubview(rightBorderView)
-        view.addSubview(progressView)
+        view.addSubview(timerView.backView)
+        view.addSubview(timerView.frontView)
         view.addSubview(playButton)
         view.addSubview(quitButton)
         view.addSubview(retryButton)
@@ -795,7 +787,6 @@ class GameController: UIViewController {
         setupBottomBorderView()
         setupLeftBorderView()
         setupRightBorderView()
-        setupProgressView()
         setupPlayButton()
         setupQuitButton()
         setupRetryButton()
@@ -871,7 +862,7 @@ class GameController: UIViewController {
     }
     
     func setupHighscoreLabel() {
-        highscoreLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor).isActive = true
+        highscoreLabel.topAnchor.constraint(equalTo: playButton.bottomAnchor).isActive = true
         highscoreLabel.bottomAnchor.constraint(equalTo: adViewHolder.topAnchor).isActive = true
         highscoreLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         highscoreLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
@@ -904,24 +895,17 @@ class GameController: UIViewController {
         rightBorderView.leftAnchor.constraint(equalTo: gameView.rightAnchor).isActive = true
         rightBorderView.rightAnchor.constraint(equalTo: gameBorderView.rightAnchor).isActive = true
     }
-    
-    func setupProgressView() {
-        progressView.centerXAnchor.constraint(equalTo: gameView.centerXAnchor).isActive = true
-        progressView.widthAnchor.constraint(equalToConstant: gameViewSideLength + 10).isActive = true
-        progressView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+
+    func setupPlayButton() {
+        playButton.centerXAnchor.constraint(equalTo: gameView.centerXAnchor).isActive = true
+        playButton.widthAnchor.constraint(equalToConstant: gameViewSideLength + 10).isActive = true
+        playButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         if screenSize.width <= 320 {
-            progressView.topAnchor.constraint(equalTo: gameView.bottomAnchor, constant: 10).isActive = true
+            playButton.topAnchor.constraint(equalTo: gameView.bottomAnchor, constant: 10).isActive = true
         } else {
-            progressView.topAnchor.constraint(equalTo: gameView.bottomAnchor, constant: 30).isActive = true
+            playButton.topAnchor.constraint(equalTo: gameView.bottomAnchor, constant: 30).isActive = true
         }
-    }
-    
-    func setupPlayButton() {
-        playButton.centerXAnchor.constraint(equalTo: progressView.centerXAnchor).isActive = true
-        playButton.widthAnchor.constraint(equalTo: progressView.widthAnchor).isActive = true
-        playButton.centerYAnchor.constraint(equalTo: progressView.centerYAnchor).isActive = true
-        playButton.heightAnchor.constraint(equalTo: progressView.heightAnchor).isActive = true
     }
     
     func setupQuitButton() {
@@ -985,6 +969,16 @@ class GameController: UIViewController {
         }
     }
     
+    override func viewDidLayoutSubviews() {
+        setupTimerView()
+    }
+    
+    func setupTimerView() {
+        timerView.setXY(x: playButton.frame.origin.x + (playButton.frame.size.width / 2), y: playButton.frame.origin.y + (playButton.frame.size.height / 2))
+        timerView.setWidthHeight(width: playButton.frame.size.width, height: playButton.frame.size.height)
+        timerView.setProgress(progress: 1)
+    }
+    
     // COLOR FUNCTION
     
     @objc func switchColors() {
@@ -1042,7 +1036,8 @@ class GameController: UIViewController {
         gameOverLabel.backgroundColor = color
         titleLabel.backgroundColor = color
         gameView.backgroundColor = color
-        progressView.tintColor = lightColor
+
+        timerView.setColors(frontColor: lightColor, backColor: UIColor.black)
     }
 }
 

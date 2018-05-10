@@ -45,6 +45,8 @@ var darkColor = UIColor(red: 0/255 , green: 79/255 , blue: 1/255 , alpha: 1)
 var player = Player()
 var goal = Goal()
 
+var timerView = TimerView()
+
 var stages = [Stage]()
 
 // VARIABLES

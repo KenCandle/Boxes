@@ -21,6 +21,7 @@
 		F0A713C0200D6C59001872AA /* Stages.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A713BF200D6C59001872AA /* Stages.swift */; };
 		F0A713C2201563B3001872AA /* SafeBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A713C1201563B3001872AA /* SafeBlock.swift */; };
 		F0A713C4201563CE001872AA /* SafeLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A713C3201563CE001872AA /* SafeLine.swift */; };
+		F0DED85E20A3DF8C00F763E0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DED85D20A3DF8C00F763E0 /* TimerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		F0A713BF200D6C59001872AA /* Stages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stages.swift; sourceTree = "<group>"; };
 		F0A713C1201563B3001872AA /* SafeBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeBlock.swift; sourceTree = "<group>"; };
 		F0A713C3201563CE001872AA /* SafeLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeLine.swift; sourceTree = "<group>"; };
+		F0DED85D20A3DF8C00F763E0 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				F0A713BD200D6C29001872AA /* Line.swift */,
 				F0A713C1201563B3001872AA /* SafeBlock.swift */,
 				F0A713C3201563CE001872AA /* SafeLine.swift */,
+				F0DED85D20A3DF8C00F763E0 /* TimerView.swift */,
 				F0A713A5200BF588001872AA /* Main.storyboard */,
 				F0A713A8200BF588001872AA /* Assets.xcassets */,
 				F0A713AA200BF588001872AA /* LaunchScreen.storyboard */,
@@ -169,6 +172,7 @@
 				F0A713C2201563B3001872AA /* SafeBlock.swift in Sources */,
 				F0A713B6200BFCEE001872AA /* Player.swift in Sources */,
 				F0A713B4200BFB37001872AA /* GlobalVariables.swift in Sources */,
+				F0DED85E20A3DF8C00F763E0 /* TimerView.swift in Sources */,
 				F0A713C0200D6C59001872AA /* Stages.swift in Sources */,
 				F0A713A4200BF588001872AA /* GameController.swift in Sources */,
 				F0A713BE200D6C29001872AA /* Line.swift in Sources */,
