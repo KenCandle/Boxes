@@ -156,7 +156,8 @@ class GameController: UIViewController {
         titleLabel.isHidden = false
         switchColorsButton.isHidden = false
         
-        timeForStage = 15
+//        timeForStage = 15
+        timeForStage = 20
 
         time = 0
         score = 0

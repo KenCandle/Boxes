@@ -15,8 +15,8 @@ let screenSize = UIScreen.main.bounds
 let gameViewSideLength: CGFloat = 300
 
 //let moveScale: CGFloat = 1.125
-
-let moveScale: CGFloat = 1
+//let moveScale: CGFloat = 1
+let moveScale: CGFloat = 0.85
 
 let finishRange: CGFloat = 2
 
@@ -54,4 +54,5 @@ var stages = [Stage]()
 var score: Int = 0
 var highScore: Int = 0
 
-var speedChange: CGFloat = 0.5
+//var speedChange: CGFloat = 0.5
+var speedChange: CGFloat = 0.35
