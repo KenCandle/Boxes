@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
 class GameController: UIViewController {
     
@@ -401,6 +402,24 @@ class GameController: UIViewController {
         return view
     }()
     
+    lazy var adView: GADBannerView = {
+        
+        let view = GADBannerView(adSize: kGADAdSizeBanner)
+        
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.adUnitID = "ca-app-pub-3580426533646075/3260379939"
+//        view.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        view.rootViewController = self
+        
+        let request = GADRequest()
+        
+        request.testDevices = [kGADSimulatorID]
+        
+        view.load(request)
+        
+        return view
+    }()
+    
     // FUNCTIONS
 
     @objc func move() {
@@ -726,6 +745,8 @@ class GameController: UIViewController {
         
         super.viewDidLoad()
         
+        adView.load(GADRequest())
+        
         let colorCountDefault = UserDefaults.standard
         
         if let savedColorCount = colorCountDefault.value(forKey: "colorCount") {
@@ -775,7 +796,8 @@ class GameController: UIViewController {
         view.addSubview(gameOverLabel)
         view.addSubview(touchView)
         view.addSubview(adViewHolder)
-        
+        view.addSubview(adView)
+
         setupGameBorderView()
         setupGameView()
         setupScoreButton()
@@ -797,6 +819,7 @@ class GameController: UIViewController {
         setupGameOverLabel()
         setupTouchView()
         setupAdViewHolder()
+        setupAdView()
     }
     
     // UI ANCHORS
@@ -968,6 +991,13 @@ class GameController: UIViewController {
         } else {
             adViewHolder.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: (320 - screenSize.width) / 2).isActive = true
         }
+    }
+    
+    func setupAdView() {
+        adView.centerXAnchor.constraint(equalTo: adViewHolder.centerXAnchor).isActive = true
+        adView.centerYAnchor.constraint(equalTo: adViewHolder.centerYAnchor).isActive = true
+        adView.widthAnchor.constraint(equalTo: adViewHolder.widthAnchor).isActive = true
+        adView.heightAnchor.constraint(equalTo: adViewHolder.heightAnchor).isActive = true
     }
     
     override func viewDidLayoutSubviews() {
