@@ -13,7 +13,7 @@ class GameController: UIViewController {
     
     // VARIABLES
     
-    var timeForStage: CGFloat = 15
+    var timeForStage: CGFloat = 25
     
     var time: CGFloat = 0
     
@@ -158,12 +158,25 @@ class GameController: UIViewController {
         switchColorsButton.isHidden = false
         
 //        timeForStage = 15
-        timeForStage = 20
+        
+        // version 1.1
+//        timeForStage = 20
+
+        // version 1.2
+        timeForStage = 25
 
         time = 0
         score = 0
         
-        speedChange = 0.5
+//        speedChange = 0.5
+
+        // version 1.1
+//        speedChange = 0.35
+        
+        // version 1.2
+        speedChange = 0.25
+
+        switchColors()
         
         canTouch = true
         
@@ -281,7 +294,7 @@ class GameController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.titleLabel!.textAlignment = .center
         button.titleLabel!.numberOfLines = 1
-        button.addTarget(self, action: #selector(switchColors), for: .touchUpInside)
+//        button.addTarget(self, action: #selector(switchColors), for: .touchUpInside)
         return button
     }()
     
@@ -747,11 +760,11 @@ class GameController: UIViewController {
         
         adView.load(GADRequest())
         
-        let colorCountDefault = UserDefaults.standard
-        
-        if let savedColorCount = colorCountDefault.value(forKey: "colorCount") {
-            colorCount = savedColorCount as! Int
-        }
+//        let colorCountDefault = UserDefaults.standard
+//
+//        if let savedColorCount = colorCountDefault.value(forKey: "colorCount") {
+//            colorCount = savedColorCount as! Int
+//        }
         
         switchColors()
         
@@ -1020,9 +1033,9 @@ class GameController: UIViewController {
             colorCount = 0
         }
         
-        let colorCountDefault = UserDefaults.standard
-        colorCountDefault.setValue(colorCount - 1, forKey: "colorCount")
-        colorCountDefault.synchronize()
+//        let colorCountDefault = UserDefaults.standard
+//        colorCountDefault.setValue(colorCount - 1, forKey: "colorCount")
+//        colorCountDefault.synchronize()
         
         if colorCount == 0 {
             
