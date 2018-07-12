@@ -380,7 +380,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
     
     let sensitivitySlider: UISlider = {
         let slider = UISlider()
-        slider.minimumValue = 0
+        slider.minimumValue = 0.5
         slider.maximumValue = 1
         slider.isContinuous = true
         slider.tintColor = UIColor.white
@@ -1114,10 +1114,28 @@ class GameController: UIViewController, GADInterstitialDelegate {
     }
     
     func setupHighscoreLabel() {
-        highscoreLabel.topAnchor.constraint(equalTo: playButton.bottomAnchor).isActive = true
-        highscoreLabel.bottomAnchor.constraint(equalTo: adViewHolder.topAnchor).isActive = true
-        highscoreLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        highscoreLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+
+        print()
+        print("HELP HELP HELP HELP HELP")
+        print()
+        print(screenSize.width)
+        print(screenSize.height)
+        print()
+        
+        if screenSize.width == 320.0 && screenSize.height == 480.0 {
+            
+            highscoreLabel.heightAnchor.constraint(equalTo: scoreButton.heightAnchor).isActive = true
+            highscoreLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            highscoreLabel.centerYAnchor.constraint(equalTo: scoreButton.centerYAnchor).isActive = true
+            highscoreLabel.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5).isActive = true
+            
+        } else {
+            
+            highscoreLabel.topAnchor.constraint(equalTo: playButton.bottomAnchor).isActive = true
+            highscoreLabel.bottomAnchor.constraint(equalTo: adViewHolder.topAnchor).isActive = true
+            highscoreLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            highscoreLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        }
     }
     
     func setupTopBorderView() {
