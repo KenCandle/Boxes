@@ -307,7 +307,7 @@ class GameController: UIViewController {
         label.textColor = UIColor.white
         label.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.bold)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "1. AVOID BLACK OBJECTS\n\n2. GRAY ZONES ARE SAFE\n\n3. MOVE FAST"
+        label.text = "1. AVOID BLACK OBJECTS\n\n2. GRAY ZONES ARE SAFE\n\n3. MOVE QUICK"
         label.baselineAdjustment = .alignCenters
         label.textAlignment = .center
         label.numberOfLines = 0
