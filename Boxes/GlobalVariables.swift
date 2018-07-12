@@ -21,7 +21,7 @@ let gameViewSideLength: CGFloat = 300
 //let moveScale: CGFloat = 0.85
 
 // version 1.2
-let moveScale: CGFloat = 0.75
+let startMoveScale: CGFloat = 0.75
 
 let finishRange: CGFloat = 2
 
@@ -58,6 +58,8 @@ var stages = [Stage]()
 
 var score: Int = 0
 var highScore: Int = 0
+
+var moveScale: CGFloat = startMoveScale
 
 //var speedChange: CGFloat = 0.5
 

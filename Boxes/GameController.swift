@@ -156,6 +156,7 @@ class GameController: UIViewController {
         playButton.isHidden = false
         titleLabel.isHidden = false
         helpButton.isHidden = false
+        optionsButton.isHidden = false
         switchColorsButton.isHidden = false
         
 //        timeForStage = 15
@@ -219,7 +220,12 @@ class GameController: UIViewController {
         playButton.isHidden = true
         titleLabel.isHidden = true
         rulesLabel.isHidden = true
+        coverView.isHidden = true
+        sensitivityLabel.isHidden = true
+        sensitivitySlider.isHidden = true
+        resetButton.isHidden = true
         helpButton.isHidden = true
+        optionsButton.isHidden = true
         switchColorsButton.isHidden = true
         
         scoreButton.setTitle("0", for: .normal)
@@ -333,6 +339,11 @@ class GameController: UIViewController {
     
     @objc func handleHelp() {
         
+        coverView.isHidden = true
+        sensitivityLabel.isHidden = true
+        sensitivitySlider.isHidden = true
+        resetButton.isHidden = true
+        
         if rulesLabel.isHidden == true {
             
             rulesLabel.isHidden = false
@@ -343,25 +354,80 @@ class GameController: UIViewController {
         }
     }
     
-    /*
-     
-    lazy var difficultySegmentedControl: UISegmentedControl = {
-        let segmentedControl = UISegmentedControl(items:["EASY", "MED", "HARD"])
-        segmentedControl.changeTitleFont(newFontName: "Cabin-Regular", newFontSize: 18)
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        segmentedControl.tintColor = altColor
-        segmentedControl.selectedSegmentIndex = 1
-        segmentedControl.addTarget(self, action: #selector(handleLoginCreateChange), for: .valueChanged)
-        return segmentedControl
+    let coverView: UIView = {
+        let view = UIView()
+        view.backgroundColor = color
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        return view
     }()
     
-    @objc func handleLoginCreateChange() {
+    let sensitivityLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = UIColor.clear
+        label.textColor = UIColor.white
+        label.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "SENSITIVITY:"
+        label.baselineAdjustment = .alignCenters
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.isHidden = true
+        return label
+    }()
+    
+    let sensitivitySlider: UISlider = {
+        let slider = UISlider()
+        slider.minimumValue = 0
+        slider.maximumValue = 1
+        slider.isContinuous = true
+        slider.tintColor = UIColor.white
+        slider.value = Float(moveScale)
+        slider.addTarget(self, action: #selector(handleSensitivitySlider), for: .valueChanged)
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.isHidden = true
+        return slider
+    }()
+    
+    @objc func handleSensitivitySlider(sender: UISlider!) {
         
-        let title = loginCreateSegmentedControl.titleForSegment(at: loginCreateSegmentedControl.selectedSegmentIndex)
+        let newMoveScale = CGFloat(sender.value)
         
-        loginCreateButton.setTitle(title, for: .normal)
+        moveScale = newMoveScale
+        
+        let moveScaleDefault = UserDefaults.standard
+        moveScaleDefault.setValue(moveScale, forKey: "moveScale")
+        moveScaleDefault.synchronize()
     }
     
+    lazy var resetButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = lightColor
+        button.setTitle("RESET", for: .normal)
+        button.setTitleColor(UIColor.black, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: UIFont.Weight.semibold)
+        button.layer.borderWidth = 0
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel!.textAlignment = .center
+        button.titleLabel!.numberOfLines = 1
+        button.addTarget(self, action: #selector(handleReset), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
+    @objc func handleReset() {
+        
+        moveScale = startMoveScale
+        
+        sensitivitySlider.value = Float(moveScale)
+        
+        let moveScaleDefault = UserDefaults.standard
+        moveScaleDefault.setValue(moveScale, forKey: "moveScale")
+        moveScaleDefault.synchronize()
+    }
+
     lazy var optionsButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor.black
@@ -380,11 +446,44 @@ class GameController: UIViewController {
     
     @objc func handleOptions() {
         
+        rulesLabel.isHidden = true
         
-        
+        if coverView.isHidden == true {
+            
+            coverView.isHidden = false
+            sensitivityLabel.isHidden = false
+            sensitivitySlider.isHidden = false
+            resetButton.isHidden = false
+            
+        } else {
+            
+            coverView.isHidden = true
+            sensitivityLabel.isHidden = true
+            sensitivitySlider.isHidden = true
+            resetButton.isHidden = true
+        }
     }
+    
+     /*
      
-    */
+     lazy var difficultySegmentedControl: UISegmentedControl = {
+     let segmentedControl = UISegmentedControl(items:["EASY", "MED", "HARD"])
+     segmentedControl.changeTitleFont(newFontName: "Cabin-Regular", newFontSize: 18)
+     segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+     segmentedControl.tintColor = altColor
+     segmentedControl.selectedSegmentIndex = 1
+     segmentedControl.addTarget(self, action: #selector(handleLoginCreateChange), for: .valueChanged)
+     return segmentedControl
+     }()
+     
+     @objc func handleLoginCreateChange() {
+     
+     let title = loginCreateSegmentedControl.titleForSegment(at: loginCreateSegmentedControl.selectedSegmentIndex)
+     
+     loginCreateButton.setTitle(title, for: .normal)
+     }
+     
+     */
     
     let highscoreLabel: UILabel = {
         let label = UILabel()
@@ -866,6 +965,14 @@ class GameController: UIViewController {
             highScore = savedHighScore as! Int
         }
         
+        let moveScaleDefault = UserDefaults.standard
+        
+        if let savedMoveScale = moveScaleDefault.value(forKey: "moveScale") {
+            moveScale = savedMoveScale as! CGFloat
+        }
+        
+        sensitivitySlider.value = Float(moveScale)
+        
         scoreButton.setTitle("", for: .normal)
 
         highscoreLabel.text = "RECORD - \(highScore)"
@@ -894,7 +1001,12 @@ class GameController: UIViewController {
         view.addSubview(titleLabel)
         view.addSubview(switchColorsButton)
         view.addSubview(rulesLabel)
+        view.addSubview(coverView)
+        view.addSubview(sensitivityLabel)
+        view.addSubview(sensitivitySlider)
+        view.addSubview(resetButton)
         view.addSubview(helpButton)
+        view.addSubview(optionsButton)
         view.addSubview(resumeButton)
         view.addSubview(gameOverLabel)
         view.addSubview(touchView)
@@ -919,7 +1031,12 @@ class GameController: UIViewController {
         setupTitleLabel()
         setupSwitchColorsButton()
         setupRulesLabel()
+        setupCoverView()
+        setupSensitivityLabel()
+        setupSensitivitySlider()
+        setupResetButton()
         setupHelpButton()
+        setupOptionsButton()
         setupResumeButton()
         setupGameOverLabel()
         setupTouchView()
@@ -1072,11 +1189,46 @@ class GameController: UIViewController {
         rulesLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
     }
     
+    func setupCoverView(){
+        coverView.centerXAnchor.constraint(equalTo: titleLabel.centerXAnchor).isActive = true
+        coverView.widthAnchor.constraint(equalTo: titleLabel.widthAnchor).isActive = true
+        coverView.heightAnchor.constraint(equalTo: titleLabel.heightAnchor).isActive = true
+        coverView.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
+    }
+    
+    func setupSensitivityLabel() {
+        sensitivityLabel.centerXAnchor.constraint(equalTo: coverView.centerXAnchor).isActive = true
+        sensitivityLabel.widthAnchor.constraint(equalTo: coverView.widthAnchor).isActive = true
+        sensitivityLabel.topAnchor.constraint(equalTo: coverView.topAnchor).isActive = true
+        sensitivityLabel.heightAnchor.constraint(equalTo: coverView.heightAnchor, multiplier: 1 / 3).isActive = true
+    }
+    
+    func setupSensitivitySlider() {
+        sensitivitySlider.centerXAnchor.constraint(equalTo: coverView.centerXAnchor).isActive = true
+        sensitivitySlider.widthAnchor.constraint(equalTo: coverView.widthAnchor, constant: -20).isActive = true
+        sensitivitySlider.centerYAnchor.constraint(equalTo: coverView.centerYAnchor).isActive = true
+        sensitivitySlider.heightAnchor.constraint(equalToConstant: 20).isActive = true
+    }
+    
+    func setupResetButton(){
+        resetButton.centerXAnchor.constraint(equalTo: coverView.centerXAnchor).isActive = true
+        resetButton.widthAnchor.constraint(equalTo: coverView.widthAnchor).isActive = true
+        resetButton.topAnchor.constraint(equalTo: helpButton.topAnchor, constant: -10).isActive = true
+        resetButton.bottomAnchor.constraint(equalTo: coverView.bottomAnchor).isActive = true
+    }
+    
     func setupHelpButton() {
         helpButton.rightAnchor.constraint(equalTo: titleLabel.rightAnchor, constant: -10).isActive = true
         helpButton.widthAnchor.constraint(equalToConstant: 34).isActive = true
         helpButton.heightAnchor.constraint(equalTo: helpButton.widthAnchor).isActive = true
         helpButton.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: -10).isActive = true
+    }
+    
+    func setupOptionsButton() {
+        optionsButton.leftAnchor.constraint(equalTo: titleLabel.leftAnchor, constant: 10).isActive = true
+        optionsButton.widthAnchor.constraint(equalTo: helpButton.widthAnchor).isActive = true
+        optionsButton.heightAnchor.constraint(equalTo: helpButton.heightAnchor).isActive = true
+        optionsButton.centerYAnchor.constraint(equalTo: helpButton.centerYAnchor).isActive = true
     }
     
     func setupResumeButton() {
@@ -1186,7 +1338,10 @@ class GameController: UIViewController {
         gameOverLabel.backgroundColor = color
         titleLabel.backgroundColor = color
         rulesLabel.backgroundColor = color
+        coverView.backgroundColor = color
         gameView.backgroundColor = color
+        
+        resetButton.backgroundColor = lightColor
 
         timerView.setColors(frontColor: lightColor, backColor: UIColor.black)
     }
