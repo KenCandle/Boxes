@@ -392,9 +392,9 @@ class GameController: UIViewController {
         label.textColor = UIColor.black.withAlphaComponent(0.75)
         
         if screenSize.width <= 320 {
-            label.font = UIFont.systemFont(ofSize: 21, weight: UIFont.Weight.bold)
+            label.font = UIFont.systemFont(ofSize: 19, weight: UIFont.Weight.bold)
         } else {
-            label.font = UIFont.systemFont(ofSize: 27.5, weight: UIFont.Weight.bold)
+            label.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.bold)
         }
         
         label.translatesAutoresizingMaskIntoConstraints = false
