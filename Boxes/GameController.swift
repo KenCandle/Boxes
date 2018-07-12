@@ -155,6 +155,7 @@ class GameController: UIViewController {
         
         playButton.isHidden = false
         titleLabel.isHidden = false
+        helpButton.isHidden = false
         switchColorsButton.isHidden = false
         
 //        timeForStage = 15
@@ -217,6 +218,8 @@ class GameController: UIViewController {
         
         playButton.isHidden = true
         titleLabel.isHidden = true
+        rulesLabel.isHidden = true
+        helpButton.isHidden = true
         switchColorsButton.isHidden = true
         
         scoreButton.setTitle("0", for: .normal)
@@ -297,6 +300,91 @@ class GameController: UIViewController {
 //        button.addTarget(self, action: #selector(switchColors), for: .touchUpInside)
         return button
     }()
+    
+    let rulesLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = color
+        label.textColor = UIColor.white
+        label.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "1. AVOID BLACK OBJECTS\n\n2. GRAY ZONES ARE SAFE\n\n3. MOVE FAST"
+        label.baselineAdjustment = .alignCenters
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.isHidden = true
+        return label
+    }()
+    
+    lazy var helpButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = UIColor.black
+        button.setTitle("?", for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.semibold)
+        button.layer.borderWidth = 0
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 17
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel!.textAlignment = .center
+        button.titleLabel!.numberOfLines = 1
+        button.addTarget(self, action: #selector(handleHelp), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func handleHelp() {
+        
+        if rulesLabel.isHidden == true {
+            
+            rulesLabel.isHidden = false
+            
+        } else {
+            
+            rulesLabel.isHidden = true
+        }
+    }
+    
+    /*
+     
+    lazy var difficultySegmentedControl: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(items:["EASY", "MED", "HARD"])
+        segmentedControl.changeTitleFont(newFontName: "Cabin-Regular", newFontSize: 18)
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.tintColor = altColor
+        segmentedControl.selectedSegmentIndex = 1
+        segmentedControl.addTarget(self, action: #selector(handleLoginCreateChange), for: .valueChanged)
+        return segmentedControl
+    }()
+    
+    @objc func handleLoginCreateChange() {
+        
+        let title = loginCreateSegmentedControl.titleForSegment(at: loginCreateSegmentedControl.selectedSegmentIndex)
+        
+        loginCreateButton.setTitle(title, for: .normal)
+    }
+    
+    lazy var optionsButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = UIColor.black
+        button.setTitle("⚙", for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.semibold)
+        button.layer.borderWidth = 0
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 17
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel!.textAlignment = .center
+        button.titleLabel!.numberOfLines = 1
+        button.addTarget(self, action: #selector(handleOptions), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func handleOptions() {
+        
+        
+        
+    }
+     
+    */
     
     let highscoreLabel: UILabel = {
         let label = UILabel()
@@ -805,6 +893,8 @@ class GameController: UIViewController {
         view.addSubview(retryButton)
         view.addSubview(titleLabel)
         view.addSubview(switchColorsButton)
+        view.addSubview(rulesLabel)
+        view.addSubview(helpButton)
         view.addSubview(resumeButton)
         view.addSubview(gameOverLabel)
         view.addSubview(touchView)
@@ -828,6 +918,8 @@ class GameController: UIViewController {
         setupRetryButton()
         setupTitleLabel()
         setupSwitchColorsButton()
+        setupRulesLabel()
+        setupHelpButton()
         setupResumeButton()
         setupGameOverLabel()
         setupTouchView()
@@ -973,6 +1065,20 @@ class GameController: UIViewController {
         switchColorsButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
     }
     
+    func setupRulesLabel() {
+        rulesLabel.centerXAnchor.constraint(equalTo: titleLabel.centerXAnchor).isActive = true
+        rulesLabel.widthAnchor.constraint(equalTo: titleLabel.widthAnchor).isActive = true
+        rulesLabel.heightAnchor.constraint(equalTo: titleLabel.heightAnchor).isActive = true
+        rulesLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
+    }
+    
+    func setupHelpButton() {
+        helpButton.rightAnchor.constraint(equalTo: titleLabel.rightAnchor, constant: -10).isActive = true
+        helpButton.widthAnchor.constraint(equalToConstant: 34).isActive = true
+        helpButton.heightAnchor.constraint(equalTo: helpButton.widthAnchor).isActive = true
+        helpButton.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: -10).isActive = true
+    }
+    
     func setupResumeButton() {
         resumeButton.centerXAnchor.constraint(equalTo: titleLabel.centerXAnchor).isActive = true
         resumeButton.widthAnchor.constraint(equalTo: titleLabel.widthAnchor).isActive = true
@@ -1079,6 +1185,7 @@ class GameController: UIViewController {
         resumeButton.backgroundColor = color
         gameOverLabel.backgroundColor = color
         titleLabel.backgroundColor = color
+        rulesLabel.backgroundColor = color
         gameView.backgroundColor = color
 
         timerView.setColors(frontColor: lightColor, backColor: UIColor.black)

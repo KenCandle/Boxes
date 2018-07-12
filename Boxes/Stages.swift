@@ -97,7 +97,7 @@ public func loadStages() {
     // easy
     // ugly
 
-    stages.append(Stage(playerX: 275, playerY: 275, goalX: 25, goalY: 275, blocks: [Block(xPoints: [150], yPoints: [125], speed: 0, isLoop: true, widths: [300], heights: [250], sizeSpeed: 0, isSizeLoop: true, teleportInterval: 0, isCircle: false, canJump: false), Block(xPoints: [150], yPoints: [275], speed: 0, isLoop: true, widths: [200], heights: [50], sizeSpeed: 0, isSizeLoop: true, teleportInterval: 0, isCircle: false, canJump: false)], lines: [], safeBlocks: [SafeBlock(xPoints: [225, 75, 75, 225], yPoints: [75, 75, 225, 225], speed: 1.5, isLoop: true, widths: [150], heights: [150], sizeSpeed: 0, isSizeLoop: true, teleportInterval: 0, isCircle: false, canJump: false)], safeLines: []))
+    stages.append(Stage(playerX: 275, playerY: 275, goalX: 25, goalY: 275, blocks: [Block(xPoints: [150], yPoints: [125], speed: 0, isLoop: true, widths: [300], heights: [250], sizeSpeed: 0, isSizeLoop: true, teleportInterval: 0, isCircle: false, canJump: false), Block(xPoints: [150], yPoints: [275], speed: 0, isLoop: true, widths: [200], heights: [50], sizeSpeed: 0, isSizeLoop: true, teleportInterval: 0, isCircle: false, canJump: false)], lines: [], safeBlocks: [SafeBlock(xPoints: [225, 75, 75, 225], yPoints: [75, 75, 225, 225], speed: 2.5, isLoop: true, widths: [150], heights: [150], sizeSpeed: 0, isSizeLoop: true, teleportInterval: 0, isCircle: false, canJump: false)], safeLines: []))
     
     // 15
     // 3 plates with the 2 oustide in sync and other in opposite movement
