@@ -9,7 +9,7 @@
 import UIKit
 import GoogleMobileAds
 
-class GameController: UIViewController {
+class GameController: UIViewController, GADInterstitialDelegate {
     
     // VARIABLES
     
@@ -39,6 +39,8 @@ class GameController: UIViewController {
     var pastStageIndex: Int = -1
     
     var colorCount: Int = -1
+    
+    var interstitial: GADInterstitial!
 
     // UI SETUP
     
@@ -707,6 +709,8 @@ class GameController: UIViewController {
     
     func handleGameOver() {
         
+        interstitial.present(fromRootViewController: self)
+        
         touchView.isHidden = true
         
         scoreButton.isEnabled = false
@@ -946,6 +950,8 @@ class GameController: UIViewController {
         super.viewDidLoad()
         
         adView.load(GADRequest())
+        
+        interstitial = createAndLoadInterstitial()
         
 //        let colorCountDefault = UserDefaults.standard
 //
@@ -1345,6 +1351,62 @@ class GameController: UIViewController {
 
         timerView.setColors(frontColor: lightColor, backColor: UIColor.black)
     }
+    
+    // AD FUNCTIONS
+    
+    func createAndLoadInterstitial() -> GADInterstitial {
+        
+        let interstitial = GADInterstitial(adUnitID: "ca-app-pub-3580426533646075/6094490479")
+//        let interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+        
+        interstitial.delegate = self
+        
+        let request = GADRequest()
+        
+        request.testDevices = [kGADSimulatorID]
+        
+        interstitial.load(request)
+        
+        return interstitial
+    }
+    
+    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        interstitial = createAndLoadInterstitial()
+    }
+    
+     /*
+     /// Tells the delegate an ad request succeeded.
+     func interstitialDidReceiveAd(_ ad: GADInterstitial) {
+     print("interstitialDidReceiveAd")
+     }
+     
+     /// Tells the delegate an ad request failed.
+     func interstitial(_ ad: GADInterstitial, didFailToReceiveAdWithError error: GADRequestError) {
+     print("interstitial:didFailToReceiveAdWithError: \(error.localizedDescription)")
+     }
+     
+     /// Tells the delegate that an interstitial will be presented.
+     func interstitialWillPresentScreen(_ ad: GADInterstitial) {
+     print("interstitialWillPresentScreen")
+     }
+     
+     /// Tells the delegate the interstitial is to be animated off the screen.
+     func interstitialWillDismissScreen(_ ad: GADInterstitial) {
+     print("interstitialWillDismissScreen")
+     }
+     
+     /// Tells the delegate the interstitial had been animated off the screen.
+     func interstitialDidFail(_ ad: GADInterstitial) {
+     print("interstitialDidDismissScreen")
+     
+     }
+     
+     /// Tells the delegate that a user click will open another app
+     /// (such as the App Store), backgrounding the current app.
+     func interstitialWillLeaveApplication(_ ad: GADInterstitial) {
+     print("interstitialWillLeaveApplication")
+     }
+     */
 }
 
 // PUBLIC FUNCTIONS
