@@ -67,4 +67,7 @@ var moveScale: CGFloat = startMoveScale
 //var speedChange: CGFloat = 0.35
 
 // version 1.2
-var speedChange: CGFloat = 0.25
+//var speedChange: CGFloat = 0.25
+
+// version 1.2.3
+var speedChange: CGFloat = 0.35

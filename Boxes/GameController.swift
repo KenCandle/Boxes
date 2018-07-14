@@ -13,7 +13,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
     
     // VARIABLES
     
-    var timeForStage: CGFloat = 25
+    var timeForStage: CGFloat = 20
     
     var time: CGFloat = 0
     
@@ -167,7 +167,10 @@ class GameController: UIViewController, GADInterstitialDelegate {
 //        timeForStage = 20
 
         // version 1.2
-        timeForStage = 25
+//        timeForStage = 25
+        
+        // version 1.2.3
+        timeForStage = 20
 
         time = 0
         score = 0
@@ -178,8 +181,11 @@ class GameController: UIViewController, GADInterstitialDelegate {
 //        speedChange = 0.35
         
         // version 1.2
-        speedChange = 0.25
+//        speedChange = 0.25
 
+        // version 1.2.3
+        speedChange = 0.35
+        
         switchColors()
         
         canTouch = true
@@ -370,7 +376,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
         label.textColor = UIColor.white
         label.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.bold)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "SENSITIVITY:"
+        label.text = "SENSITIVITY - \(moveScale)"
         label.baselineAdjustment = .alignCenters
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -397,6 +403,8 @@ class GameController: UIViewController, GADInterstitialDelegate {
         
         moveScale = newMoveScale
         
+        updateSensitivityLabel()
+
         let moveScaleDefault = UserDefaults.standard
         moveScaleDefault.setValue(moveScale, forKey: "moveScale")
         moveScaleDefault.synchronize()
@@ -422,6 +430,8 @@ class GameController: UIViewController, GADInterstitialDelegate {
     @objc func handleReset() {
         
         moveScale = startMoveScale
+        
+        updateSensitivityLabel()
         
         sensitivitySlider.value = Float(moveScale)
         
@@ -850,6 +860,20 @@ class GameController: UIViewController, GADInterstitialDelegate {
         timerView.setProgress(progress: 1)
     }
     
+    func updateSensitivityLabel() {
+        
+        let formatter = NumberFormatter()
+        
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        
+        let tempMoveScale = NSNumber(value: Float(moveScale))
+        let moveScaleString = formatter.string(from: tempMoveScale)
+        
+        sensitivityLabel.text = "SENSITIVITY - \(moveScaleString!)"
+    }
+    
     // TOUCHES
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -984,6 +1008,8 @@ class GameController: UIViewController, GADInterstitialDelegate {
         highscoreLabel.text = "RECORD - \(highScore)"
         
         touchView.isHidden = true
+        
+        updateSensitivityLabel()
             
         view.backgroundColor = backgroundColor
         
@@ -1114,13 +1140,6 @@ class GameController: UIViewController, GADInterstitialDelegate {
     }
     
     func setupHighscoreLabel() {
-
-        print()
-        print("HELP HELP HELP HELP HELP")
-        print()
-        print(screenSize.width)
-        print(screenSize.height)
-        print()
         
         if screenSize.width == 320.0 && screenSize.height == 480.0 {
             
