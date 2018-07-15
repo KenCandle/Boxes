@@ -8,8 +8,149 @@
 
 import UIKit
 import GoogleMobileAds
+import StoreKit
 
-class GameController: UIViewController, GADInterstitialDelegate {
+class GameController: UIViewController, GADInterstitialDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver {
+    
+    // IN APP PURCHASE FUNCTIONS
+    
+//    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+//        <#code#>
+//    }
+//
+//    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+//        <#code#>
+//    }
+    
+    func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
+//        nonConsumablePurchaseMade = true
+//        UserDefaults.standard.set(nonConsumablePurchaseMade, forKey: "nonConsumablePurchaseMade")
+        
+        UIAlertView(title: "RESTORED",
+                    message: "You've successfully restored your purchase!",
+                    delegate: nil, cancelButtonTitle: "OK").show()
+    }
+    
+    func fetchAvailableProducts()  {
+        
+        // Put here your IAP Products ID's
+        let productIdentifiers = NSSet(objects:
+            REMOVEADS_PRODUCT_ID
+        )
+        
+        productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers as! Set<String>)
+        productsRequest.delegate = self
+        productsRequest.start()
+    }
+    
+    func productsRequest (_ request:SKProductsRequest, didReceive response:SKProductsResponse) {
+        if (response.products.count > 0) {
+            iapProducts = response.products
+            
+            // 1st IAP Product (Consumable) ------------------------------------
+            let firstProduct = response.products[0] as SKProduct
+            
+            // Get its price from iTunes Connect
+            let numberFormatter = NumberFormatter()
+            numberFormatter.formatterBehavior = .behavior10_4
+            numberFormatter.numberStyle = .currency
+            numberFormatter.locale = firstProduct.priceLocale
+            let price1Str = numberFormatter.string(from: firstProduct.price)
+            
+            // Show its description
+//            consumableLabel.text = firstProduct.localizedDescription + "\nfor just \(price1Str!)"
+            // ------------------------------------------------
+            
+            
+            
+            // 2nd IAP Product (Non-Consumable) ------------------------------
+            let secondProd = response.products[0] as SKProduct
+            
+            // Get its price from iTunes Connect
+            numberFormatter.locale = secondProd.priceLocale
+            let price2Str = numberFormatter.string(from: secondProd.price)
+            
+            // Show its description
+//            nonConsumableLabel.text = secondProd.localizedDescription + "\nfor just \(price2Str!)"
+            // ------------------------------------
+        }
+    }
+    
+    func canMakePurchases() -> Bool {  return SKPaymentQueue.canMakePayments()  }
+    func purchaseMyProduct(product: SKProduct) {
+        if self.canMakePurchases() {
+            let payment = SKPayment(product: product)
+            SKPaymentQueue.default().add(self)
+            SKPaymentQueue.default().add(payment)
+            
+            print("PRODUCT TO PURCHASE: \(product.productIdentifier)")
+            productID = product.productIdentifier
+            
+            
+            // IAP Purchases dsabled on the Device
+        } else {
+            UIAlertView(title: "IAP Tutorial",
+                        message: "Purchases are disabled in your device!",
+                        delegate: nil, cancelButtonTitle: "OK").show()
+        }
+    }
+    
+    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        for transaction:AnyObject in transactions {
+            if let trans = transaction as? SKPaymentTransaction {
+                switch trans.transactionState {
+                    
+                case .purchased:
+                    SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
+                    
+                    if productID == REMOVEADS_PRODUCT_ID {
+                        
+                        // Save your purchase locally (needed only for Non-Consumable IAP)
+//                        nonConsumablePurchaseMade = true
+//                        UserDefaults.standard.set(nonConsumablePurchaseMade, forKey: "nonConsumablePurchaseMade")
+//
+//                        premiumLabel.text = "Premium version PURCHASED!"
+                        
+                        UIAlertView(title: "IAP Tutorial",
+                                    message: "You've successfully unlocked the Premium version!",
+                                    delegate: nil,
+                                    cancelButtonTitle: "OK").show()
+                    }
+                    
+                    break
+                    
+                case .failed:
+                    SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
+                    
+                    UIAlertView(title: "IAP Tutorial",
+                                message: "FAILED",
+                                delegate: nil,
+                                cancelButtonTitle: "OK").show()
+                    
+                    break
+                case .restored:
+                    SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
+                    
+                    UIAlertView(title: "IAP Tutorial",
+                                message: "RESTORED",
+                                delegate: nil,
+                                cancelButtonTitle: "OK").show()
+                    
+                    break
+                    
+                default: break
+                }}}
+    }
+    
+    // IN APP PURCHASE VARIABLES
+    
+    let REMOVEADS_PRODUCT_ID = "com.collinhoward.Boxes.removeads"
+    
+    var productID = ""
+    var productsRequest = SKProductsRequest()
+    var iapProducts = [SKProduct]()
+//    var nonConsumablePurchaseMade = UserDefaults.standard.bool(forKey: "nonConsumablePurchaseMade")
+//    var coins = UserDefaults.standard.integer(forKey: "coins")
     
     // VARIABLES
     
@@ -87,7 +228,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
         let button = UIButton()
         button.backgroundColor = color
         button.setTitle("RESUME", for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(UIColor.black, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 75, weight: UIFont.Weight.light)
         button.layer.borderWidth = 0
         button.layer.borderColor = UIColor.black.cgColor
@@ -119,7 +260,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
     let gameOverLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = color
-        label.textColor = UIColor.white
+        label.textColor = UIColor.black
         label.font = UIFont.systemFont(ofSize: 75, weight: UIFont.Weight.light)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "GAME\nOVER"
@@ -151,6 +292,9 @@ class GameController: UIViewController, GADInterstitialDelegate {
         
         scoreButton.isEnabled = false
         
+        quitBottomButton.isHidden = true
+        retryButton.isHidden = true
+
         gameOverLabel.isHidden = true
         resumeButton.isHidden = true
         quitButton.isHidden = true
@@ -159,6 +303,11 @@ class GameController: UIViewController, GADInterstitialDelegate {
         titleLabel.isHidden = false
         helpButton.isHidden = false
         optionsButton.isHidden = false
+
+        if didRemoveAds == false {
+            removeAdsButton.isHidden = false
+        }
+        
         switchColorsButton.isHidden = false
         
 //        timeForStage = 15
@@ -196,6 +345,10 @@ class GameController: UIViewController, GADInterstitialDelegate {
         
         scoreButton.setTitle("", for: .normal)
         
+        if didRemoveAds == false {
+            removeAdsButton.isHidden = false
+        }
+        
         timerView.setProgress(progress: 1)
         
         canTimerRun = true
@@ -225,6 +378,8 @@ class GameController: UIViewController, GADInterstitialDelegate {
         
         canTouch = true
         
+        handleCancel()
+
         playButton.isHidden = true
         titleLabel.isHidden = true
         rulesLabel.isHidden = true
@@ -234,9 +389,12 @@ class GameController: UIViewController, GADInterstitialDelegate {
         resetButton.isHidden = true
         helpButton.isHidden = true
         optionsButton.isHidden = true
+        removeAdsButton.isHidden = true
         switchColorsButton.isHidden = true
         
         scoreButton.setTitle("0", for: .normal)
+        
+        removeAdsButton.isHidden = true
         
         isMenu = false
         isPlaying = true
@@ -262,9 +420,26 @@ class GameController: UIViewController, GADInterstitialDelegate {
         timerView.setProgress(progress: 1)
     }
     
+    lazy var quitBottomButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = color
+        button.setTitle("QUIT", for: .normal)
+        button.setTitleColor(UIColor.black, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.semibold)
+        button.layer.borderWidth = 0
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel!.textAlignment = .center
+        button.titleLabel!.numberOfLines = 1
+        button.addTarget(self, action: #selector(handleQuit), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
     lazy var retryButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = UIColor.clear
+        button.backgroundColor = lightColor
         button.setTitle("RETRY", for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 35, weight: UIFont.Weight.semibold)
@@ -281,6 +456,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
     
     @objc func handleRetry() {
         
+        quitBottomButton.isHidden = true
         retryButton.isHidden = true
         
         handleQuit()
@@ -290,7 +466,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = color
-        label.textColor = UIColor.white
+        label.textColor = UIColor.black
         label.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "B   B   B\nO       O       O\nX         X         X\nE       E       E\nS   S   S"
@@ -318,7 +494,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
     let rulesLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = color
-        label.textColor = UIColor.white
+        label.textColor = UIColor.black
         label.font = UIFont.systemFont(ofSize: 25, weight: UIFont.Weight.bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "1. AVOID BLACK OBJECTS\n\n2. GRAY ZONES ARE SAFE\n\n3. MOVE QUICK"
@@ -354,9 +530,18 @@ class GameController: UIViewController, GADInterstitialDelegate {
         
         if rulesLabel.isHidden == true {
             
+            optionsButton.isHidden = true
+            removeAdsButton.isHidden = true
+
             rulesLabel.isHidden = false
             
         } else {
+            
+            optionsButton.isHidden = false
+            
+            if didRemoveAds == false {
+                removeAdsButton.isHidden = false
+            }
             
             rulesLabel.isHidden = true
         }
@@ -462,12 +647,21 @@ class GameController: UIViewController, GADInterstitialDelegate {
         
         if coverView.isHidden == true {
             
+            helpButton.isHidden = true
+            removeAdsButton.isHidden = true
+            
             coverView.isHidden = false
             sensitivityLabel.isHidden = false
             sensitivitySlider.isHidden = false
             resetButton.isHidden = false
             
         } else {
+            
+            helpButton.isHidden = false
+
+            if didRemoveAds == false {
+                removeAdsButton.isHidden = false
+            }
             
             coverView.isHidden = true
             sensitivityLabel.isHidden = true
@@ -607,30 +801,123 @@ class GameController: UIViewController, GADInterstitialDelegate {
         return view
     }()
     
-    var adViewHolder: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.black
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+    lazy var removeAdsButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = UIColor.black
+        button.setTitle("REMOVE ADS?", for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 30, weight: UIFont.Weight.semibold)
+        button.layer.borderWidth = 0
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel!.textAlignment = .center
+        button.titleLabel!.numberOfLines = 1
+        button.addTarget(self, action: #selector(handleRemoveAds), for: .touchUpInside)
+        return button
     }()
     
-    lazy var adView: GADBannerView = {
+    @objc func handleRemoveAds() {
         
-        let view = GADBannerView(adSize: kGADAdSizeBanner)
+        helpButton.isHidden = true
+        optionsButton.isHidden = true
         
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.adUnitID = "ca-app-pub-3580426533646075/3260379939"
-//        view.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        view.rootViewController = self
-        
-        let request = GADRequest()
-        
-        request.testDevices = [kGADSimulatorID]
-        
-        view.load(request)
-        
-        return view
+        restoreButton.isHidden = false
+        yesButton.isHidden = false
+        cancelButton.isHidden = false
+    }
+    
+    lazy var restoreButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = lightColor
+        button.setTitle("RESTORE PURCHASE", for: .normal)
+        button.setTitleColor(UIColor.black, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: UIFont.Weight.semibold)
+        button.layer.borderWidth = 0
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel!.textAlignment = .center
+        button.titleLabel!.numberOfLines = 1
+        button.addTarget(self, action: #selector(handleRestore), for: .touchUpInside)
+        button.isHidden = true
+        return button
     }()
+    
+    @objc func handleRestore() {
+        
+        SKPaymentQueue.default().add(self)
+        SKPaymentQueue.default().restoreCompletedTransactions()
+        
+//        IAPHandler.shared.restorePurchase()
+        
+        helpButton.isHidden = false
+        optionsButton.isHidden = false
+        
+        restoreButton.isHidden = true
+        yesButton.isHidden = true
+        cancelButton.isHidden = true
+    }
+    
+    lazy var yesButton: UIButton = {
+        let button = UIButton()
+//        button.backgroundColor = UIColor(red: 0/255 , green: 183/255 , blue: 4/255 , alpha: 1)
+        button.backgroundColor = color
+        button.setTitle("REMOVE FULL\nSCREEN ADS\n($0.99)", for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 28, weight: UIFont.Weight.semibold)
+        button.layer.borderWidth = 0
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel!.textAlignment = .center
+        button.titleLabel!.numberOfLines = 3
+        button.addTarget(self, action: #selector(handleYes), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
+    @objc func handleYes() {
+        
+        purchaseMyProduct(product: iapProducts[0])
+        
+//        IAPHandler.shared.purchaseMyProduct(index: 0)
+        
+        helpButton.isHidden = false
+        optionsButton.isHidden = false
+        
+        restoreButton.isHidden = true
+        yesButton.isHidden = true
+        cancelButton.isHidden = true
+    }
+    
+    lazy var cancelButton: UIButton = {
+        let button = UIButton()
+//        button.backgroundColor = UIColor(red: 220/255 , green: 34/255 , blue: 2/255 , alpha: 1)
+        button.backgroundColor = lightColor
+        button.setTitle("CANCEL", for: .normal)
+        button.setTitleColor(UIColor.black, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: UIFont.Weight.semibold)
+        button.layer.borderWidth = 0
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel!.textAlignment = .center
+        button.titleLabel!.numberOfLines = 1
+        button.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
+    @objc func handleCancel() {
+        
+        helpButton.isHidden = false
+        optionsButton.isHidden = false
+        
+        restoreButton.isHidden = true
+        yesButton.isHidden = true
+        cancelButton.isHidden = true
+    }
     
     // FUNCTIONS
 
@@ -719,13 +1006,23 @@ class GameController: UIViewController, GADInterstitialDelegate {
     
     func handleGameOver() {
         
-        interstitial.present(fromRootViewController: self)
+        adCounter += 1
+        
+        if adCounter >= 3 {
+            
+            adCounter = 0
+            
+            if didRemoveAds == false {
+                interstitial.present(fromRootViewController: self)
+            }
+        }
         
         touchView.isHidden = true
         
         scoreButton.isEnabled = false
         
         gameOverLabel.isHidden = false
+        quitBottomButton.isHidden = false
         retryButton.isHidden = false
         
         isMenu = false
@@ -973,7 +1270,39 @@ class GameController: UIViewController, GADInterstitialDelegate {
         
         super.viewDidLoad()
         
-        adView.load(GADRequest())
+        // Check your In-App Purchases
+//        print("NON CONSUMABLE PURCHASE MADE: \(nonConsumablePurchaseMade)")
+//        print("COINS: \(coins)")
+        
+        // Set text
+//        coinsLabel.text = "COINS: \(coins)"
+//
+//        if nonConsumablePurchaseMade { premiumLabel.text = "Premium version PURCHASED!"
+//        } else { premiumLabel.text = "Premium version LOCKED!"}
+        
+        // Fetch IAP Products available
+        fetchAvailableProducts()
+        
+//        IAPHandler.shared.fetchAvailableProducts()
+//        IAPHandler.shared.purchaseStatusBlock = {[weak self] (type) in
+//            guard let strongSelf = self else{ return }
+//            if type == .purchased {
+//                let alertView = UIAlertController(title: "", message: type.message(), preferredStyle: .alert)
+//                let action = UIAlertAction(title: "OK", style: .default, handler: { (alert) in
+//
+//                })
+//                alertView.addAction(action)
+//                strongSelf.present(alertView, animated: true, completion: nil)
+//            }
+//        }
+        
+        adView.rootViewController = self
+        
+        let request = GADRequest()
+        
+        request.testDevices = [kGADSimulatorID]
+        
+        adView.load(request)
         
         interstitial = createAndLoadInterstitial()
         
@@ -1001,10 +1330,25 @@ class GameController: UIViewController, GADInterstitialDelegate {
             moveScale = savedMoveScale as! CGFloat
         }
         
+        let didRemoveAdsDefault = UserDefaults.standard
+        
+        if let savedDidRemoveAds = didRemoveAdsDefault.value(forKey: "didRemoveAds") {
+            didRemoveAds = savedDidRemoveAds as! Bool
+        }
+        
+        if didRemoveAds == true {
+            
+            removeAdsButton.isHidden = true
+            
+//            adView.removeFromSuperview()
+//
+//            adViewHolder.isHidden = true
+        }
+        
         sensitivitySlider.value = Float(moveScale)
         
         scoreButton.setTitle("", for: .normal)
-
+        
         highscoreLabel.text = "RECORD - \(highScore)"
         
         touchView.isHidden = true
@@ -1029,6 +1373,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
         view.addSubview(timerView.frontView)
         view.addSubview(playButton)
         view.addSubview(quitButton)
+        view.addSubview(quitBottomButton)
         view.addSubview(retryButton)
         view.addSubview(titleLabel)
         view.addSubview(switchColorsButton)
@@ -1042,6 +1387,10 @@ class GameController: UIViewController, GADInterstitialDelegate {
         view.addSubview(resumeButton)
         view.addSubview(gameOverLabel)
         view.addSubview(touchView)
+        view.addSubview(removeAdsButton)
+        view.addSubview(restoreButton)
+        view.addSubview(yesButton)
+        view.addSubview(cancelButton)
         view.addSubview(adViewHolder)
         view.addSubview(adView)
 
@@ -1059,6 +1408,7 @@ class GameController: UIViewController, GADInterstitialDelegate {
         setupRightBorderView()
         setupPlayButton()
         setupQuitButton()
+        setupQuitBottomButton()
         setupRetryButton()
         setupTitleLabel()
         setupSwitchColorsButton()
@@ -1072,6 +1422,10 @@ class GameController: UIViewController, GADInterstitialDelegate {
         setupResumeButton()
         setupGameOverLabel()
         setupTouchView()
+        setupRemoveAdsButton()
+        setupRestoreButton()
+        setupYesButton()
+        setupCancelButton()
         setupAdViewHolder()
         setupAdView()
     }
@@ -1204,9 +1558,16 @@ class GameController: UIViewController, GADInterstitialDelegate {
         quitButton.heightAnchor.constraint(equalTo: playButton.heightAnchor).isActive = true
     }
     
+    func setupQuitBottomButton() {
+        quitBottomButton.rightAnchor.constraint(equalTo: retryButton.leftAnchor).isActive = true
+        quitBottomButton.leftAnchor.constraint(equalTo: quitButton.leftAnchor).isActive = true
+        quitBottomButton.centerYAnchor.constraint(equalTo: quitButton.centerYAnchor).isActive = true
+        quitBottomButton.heightAnchor.constraint(equalTo: quitButton.heightAnchor).isActive = true
+    }
+    
     func setupRetryButton() {
-        retryButton.centerXAnchor.constraint(equalTo: quitButton.centerXAnchor).isActive = true
-        retryButton.widthAnchor.constraint(equalTo: quitButton.widthAnchor).isActive = true
+        retryButton.rightAnchor.constraint(equalTo: quitButton.rightAnchor).isActive = true
+        retryButton.widthAnchor.constraint(equalTo: quitButton.widthAnchor, multiplier: 0.75).isActive = true
         retryButton.centerYAnchor.constraint(equalTo: quitButton.centerYAnchor).isActive = true
         retryButton.heightAnchor.constraint(equalTo: quitButton.heightAnchor).isActive = true
     }
@@ -1293,6 +1654,34 @@ class GameController: UIViewController, GADInterstitialDelegate {
         touchView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         touchView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         touchView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+    }
+    
+    func setupRemoveAdsButton() {
+        removeAdsButton.centerXAnchor.constraint(equalTo: gameBorderView.centerXAnchor).isActive = true
+        removeAdsButton.widthAnchor.constraint(equalTo: gameBorderView.widthAnchor).isActive = true
+        removeAdsButton.topAnchor.constraint(equalTo: titleLabel.topAnchor).isActive = true
+        removeAdsButton.heightAnchor.constraint(equalTo: resetButton.heightAnchor).isActive = true
+    }
+    
+    func setupRestoreButton() {
+        restoreButton.centerXAnchor.constraint(equalTo: removeAdsButton.centerXAnchor).isActive = true
+        restoreButton.centerYAnchor.constraint(equalTo: removeAdsButton.centerYAnchor).isActive = true
+        restoreButton.widthAnchor.constraint(equalTo: cancelButton.widthAnchor).isActive = true
+        restoreButton.heightAnchor.constraint(equalTo: removeAdsButton.heightAnchor).isActive = true
+    }
+    
+    func setupYesButton() {
+        yesButton.centerXAnchor.constraint(equalTo: removeAdsButton.centerXAnchor).isActive = true
+        yesButton.widthAnchor.constraint(equalTo: cancelButton.widthAnchor).isActive = true
+        yesButton.topAnchor.constraint(equalTo: removeAdsButton.bottomAnchor).isActive = true
+        yesButton.bottomAnchor.constraint(equalTo: cancelButton.topAnchor).isActive = true
+    }
+    
+    func setupCancelButton() {
+        cancelButton.centerXAnchor.constraint(equalTo: resetButton.centerXAnchor).isActive = true
+        cancelButton.widthAnchor.constraint(equalTo: resetButton.widthAnchor).isActive = true
+        cancelButton.heightAnchor.constraint(equalTo: resetButton.heightAnchor).isActive = true
+        cancelButton.centerYAnchor.constraint(equalTo: resetButton.centerYAnchor).isActive = true
     }
     
     func setupAdViewHolder() {
@@ -1383,8 +1772,13 @@ class GameController: UIViewController, GADInterstitialDelegate {
         rulesLabel.backgroundColor = color
         coverView.backgroundColor = color
         gameView.backgroundColor = color
-        
+        quitBottomButton.backgroundColor = color
+        yesButton.backgroundColor = color
+
         resetButton.backgroundColor = lightColor
+        retryButton.backgroundColor = lightColor
+        restoreButton.backgroundColor = lightColor
+        cancelButton.backgroundColor = lightColor
 
         timerView.setColors(frontColor: lightColor, backColor: UIColor.black)
     }
