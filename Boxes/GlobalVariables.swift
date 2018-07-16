@@ -91,13 +91,6 @@ var adView: GADBannerView = {
     view.translatesAutoresizingMaskIntoConstraints = false
     view.adUnitID = "ca-app-pub-3580426533646075/3260379939"
     //        view.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-//    view.rootViewController = GameController()
-//
-//    let request = GADRequest()
-//
-//    request.testDevices = [kGADSimulatorID]
-//
-//    view.load(request)
     
     return view
 }()

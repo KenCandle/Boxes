@@ -10,7 +10,6 @@
 		D88D617237A6190A048EC6D3 /* Pods_Boxes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD1F244E39CF5E2AD900805E /* Pods_Boxes.framework */; };
 		F07AB6DE20F1F999000227E7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F07AB6DD20F1F998000227E7 /* GoogleService-Info.plist */; };
 		F08FF6AE20FAD33700CE0144 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08FF6AD20FAD33700CE0144 /* StoreKit.framework */; };
-		F08FF6B020FAD3D200CE0144 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08FF6AF20FAD3D200CE0144 /* IAPHelper.swift */; };
 		F0A713A2200BF588001872AA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A713A1200BF588001872AA /* AppDelegate.swift */; };
 		F0A713A4200BF588001872AA /* GameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A713A3200BF588001872AA /* GameController.swift */; };
 		F0A713A7200BF588001872AA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0A713A5200BF588001872AA /* Main.storyboard */; };
@@ -32,7 +31,6 @@
 		8CF3BC28CB35419FE4632055 /* Pods-Boxes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Boxes.release.xcconfig"; path = "Pods/Target Support Files/Pods-Boxes/Pods-Boxes.release.xcconfig"; sourceTree = "<group>"; };
 		F07AB6DD20F1F998000227E7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F08FF6AD20FAD33700CE0144 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		F08FF6AF20FAD3D200CE0144 /* IAPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
 		F0A7139E200BF588001872AA /* Boxes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Boxes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A713A1200BF588001872AA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F0A713A3200BF588001872AA /* GameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameController.swift; sourceTree = "<group>"; };
@@ -118,7 +116,6 @@
 				F0A713C1201563B3001872AA /* SafeBlock.swift */,
 				F0A713C3201563CE001872AA /* SafeLine.swift */,
 				F0DED85D20A3DF8C00F763E0 /* TimerView.swift */,
-				F08FF6AF20FAD3D200CE0144 /* IAPHelper.swift */,
 				F0A713A5200BF588001872AA /* Main.storyboard */,
 				F0A713A8200BF588001872AA /* Assets.xcassets */,
 				F0A713AA200BF588001872AA /* LaunchScreen.storyboard */,
@@ -258,7 +255,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0A713BA200BFEBE001872AA /* Stage.swift in Sources */,
-				F08FF6B020FAD3D200CE0144 /* IAPHelper.swift in Sources */,
 				F0A713BC200C0014001872AA /* Block.swift in Sources */,
 				F0A713C4201563CE001872AA /* SafeLine.swift in Sources */,
 				F0A713C2201563B3001872AA /* SafeBlock.swift in Sources */,

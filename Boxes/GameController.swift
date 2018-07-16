@@ -14,26 +14,21 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
     
     // IN APP PURCHASE FUNCTIONS
     
-//    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-//        <#code#>
-//    }
-//
-//    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-//        <#code#>
-//    }
-    
     func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
-//        nonConsumablePurchaseMade = true
-//        UserDefaults.standard.set(nonConsumablePurchaseMade, forKey: "nonConsumablePurchaseMade")
+
+        removeAdsButton.isHidden = true
         
-        UIAlertView(title: "RESTORED",
-                    message: "You've successfully restored your purchase!",
-                    delegate: nil, cancelButtonTitle: "OK").show()
+        didRemoveAds = true
+        
+        let didRemoveAdsDefault = UserDefaults.standard
+        didRemoveAdsDefault.setValue(didRemoveAds, forKey: "didRemoveAds")
+        didRemoveAdsDefault.synchronize()
+        
+        UIAlertView(title: "PURCHASE RESTORED", message: "You've successfully restored your purchase!", delegate: nil, cancelButtonTitle: "OK").show()
     }
     
     func fetchAvailableProducts()  {
         
-        // Put here your IAP Products ID's
         let productIdentifiers = NSSet(objects:
             REMOVEADS_PRODUCT_ID
         )
@@ -44,102 +39,72 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
     }
     
     func productsRequest (_ request:SKProductsRequest, didReceive response:SKProductsResponse) {
+        
         if (response.products.count > 0) {
             iapProducts = response.products
-            
-            // 1st IAP Product (Consumable) ------------------------------------
-            let firstProduct = response.products[0] as SKProduct
-            
-            // Get its price from iTunes Connect
-            let numberFormatter = NumberFormatter()
-            numberFormatter.formatterBehavior = .behavior10_4
-            numberFormatter.numberStyle = .currency
-            numberFormatter.locale = firstProduct.priceLocale
-            let price1Str = numberFormatter.string(from: firstProduct.price)
-            
-            // Show its description
-//            consumableLabel.text = firstProduct.localizedDescription + "\nfor just \(price1Str!)"
-            // ------------------------------------------------
-            
-            
-            
-            // 2nd IAP Product (Non-Consumable) ------------------------------
-            let secondProd = response.products[0] as SKProduct
-            
-            // Get its price from iTunes Connect
-            numberFormatter.locale = secondProd.priceLocale
-            let price2Str = numberFormatter.string(from: secondProd.price)
-            
-            // Show its description
-//            nonConsumableLabel.text = secondProd.localizedDescription + "\nfor just \(price2Str!)"
-            // ------------------------------------
         }
     }
     
     func canMakePurchases() -> Bool {  return SKPaymentQueue.canMakePayments()  }
+    
     func purchaseMyProduct(product: SKProduct) {
+        
         if self.canMakePurchases() {
+            
             let payment = SKPayment(product: product)
+            
             SKPaymentQueue.default().add(self)
             SKPaymentQueue.default().add(payment)
             
-            print("PRODUCT TO PURCHASE: \(product.productIdentifier)")
+            //print("PRODUCT TO PURCHASE: \(product.productIdentifier)")
+            
             productID = product.productIdentifier
             
-            
-            // IAP Purchases dsabled on the Device
         } else {
-            UIAlertView(title: "IAP Tutorial",
-                        message: "Purchases are disabled in your device!",
-                        delegate: nil, cancelButtonTitle: "OK").show()
+            
+            UIAlertView(title: "PURCHASE ERROR", message: "Purchases are disabled on your device!", delegate: nil, cancelButtonTitle: "OK").show()
         }
     }
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        
         for transaction:AnyObject in transactions {
+            
             if let trans = transaction as? SKPaymentTransaction {
+                
                 switch trans.transactionState {
                     
                 case .purchased:
+                    
                     SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
                     
                     if productID == REMOVEADS_PRODUCT_ID {
                         
-                        // Save your purchase locally (needed only for Non-Consumable IAP)
-//                        nonConsumablePurchaseMade = true
-//                        UserDefaults.standard.set(nonConsumablePurchaseMade, forKey: "nonConsumablePurchaseMade")
-//
-//                        premiumLabel.text = "Premium version PURCHASED!"
+                        removeAdsButton.isHidden = true
+
+                        didRemoveAds = true
                         
-                        UIAlertView(title: "IAP Tutorial",
-                                    message: "You've successfully unlocked the Premium version!",
-                                    delegate: nil,
-                                    cancelButtonTitle: "OK").show()
+                        let didRemoveAdsDefault = UserDefaults.standard
+                        didRemoveAdsDefault.setValue(didRemoveAds, forKey: "didRemoveAds")
+                        didRemoveAdsDefault.synchronize()
+                        
+                        //UIAlertView(title: "ADS REMOVED", message: "You've successfully removed full screen ads!", delegate: nil, cancelButtonTitle: "OK").show()
                     }
                     
                     break
                     
                 case .failed:
                     SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
-                    
-                    UIAlertView(title: "IAP Tutorial",
-                                message: "FAILED",
-                                delegate: nil,
-                                cancelButtonTitle: "OK").show()
-                    
                     break
                 case .restored:
                     SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
-                    
-                    UIAlertView(title: "IAP Tutorial",
-                                message: "RESTORED",
-                                delegate: nil,
-                                cancelButtonTitle: "OK").show()
-                    
                     break
-                    
-                default: break
-                }}}
+                default:
+                    break
+                }
+            }
+            
+        }
     }
     
     // IN APP PURCHASE VARIABLES
@@ -149,8 +114,6 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
     var productID = ""
     var productsRequest = SKProductsRequest()
     var iapProducts = [SKProduct]()
-//    var nonConsumablePurchaseMade = UserDefaults.standard.bool(forKey: "nonConsumablePurchaseMade")
-//    var coins = UserDefaults.standard.integer(forKey: "coins")
     
     // VARIABLES
     
@@ -849,8 +812,6 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         SKPaymentQueue.default().add(self)
         SKPaymentQueue.default().restoreCompletedTransactions()
         
-//        IAPHandler.shared.restorePurchase()
-        
         helpButton.isHidden = false
         optionsButton.isHidden = false
         
@@ -880,8 +841,6 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
     @objc func handleYes() {
         
         purchaseMyProduct(product: iapProducts[0])
-        
-//        IAPHandler.shared.purchaseMyProduct(index: 0)
         
         helpButton.isHidden = false
         optionsButton.isHidden = false
@@ -1270,31 +1229,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         
         super.viewDidLoad()
         
-        // Check your In-App Purchases
-//        print("NON CONSUMABLE PURCHASE MADE: \(nonConsumablePurchaseMade)")
-//        print("COINS: \(coins)")
-        
-        // Set text
-//        coinsLabel.text = "COINS: \(coins)"
-//
-//        if nonConsumablePurchaseMade { premiumLabel.text = "Premium version PURCHASED!"
-//        } else { premiumLabel.text = "Premium version LOCKED!"}
-        
-        // Fetch IAP Products available
-        fetchAvailableProducts()
-        
-//        IAPHandler.shared.fetchAvailableProducts()
-//        IAPHandler.shared.purchaseStatusBlock = {[weak self] (type) in
-//            guard let strongSelf = self else{ return }
-//            if type == .purchased {
-//                let alertView = UIAlertController(title: "", message: type.message(), preferredStyle: .alert)
-//                let action = UIAlertAction(title: "OK", style: .default, handler: { (alert) in
-//
-//                })
-//                alertView.addAction(action)
-//                strongSelf.present(alertView, animated: true, completion: nil)
-//            }
-//        }
+        switchColors()
         
         adView.rootViewController = self
         
@@ -1306,13 +1241,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         
         interstitial = createAndLoadInterstitial()
         
-//        let colorCountDefault = UserDefaults.standard
-//
-//        if let savedColorCount = colorCountDefault.value(forKey: "colorCount") {
-//            colorCount = savedColorCount as! Int
-//        }
-        
-        switchColors()
+        fetchAvailableProducts()
         
         moveTimer = Timer.scheduledTimer(timeInterval: (1 / 120), target: self, selector: #selector(move), userInfo: nil, repeats: true)
         
@@ -1337,12 +1266,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         }
         
         if didRemoveAds == true {
-            
             removeAdsButton.isHidden = true
-            
-//            adView.removeFromSuperview()
-//
-//            adViewHolder.isHidden = true
         }
         
         sensitivitySlider.value = Float(moveScale)
@@ -1722,10 +1646,6 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         } else {
             colorCount = 0
         }
-        
-//        let colorCountDefault = UserDefaults.standard
-//        colorCountDefault.setValue(colorCount - 1, forKey: "colorCount")
-//        colorCountDefault.synchronize()
         
         if colorCount == 0 {
             
