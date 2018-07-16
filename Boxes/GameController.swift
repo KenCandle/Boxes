@@ -268,7 +268,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         optionsButton.isHidden = false
 
         if didRemoveAds == false {
-            removeAdsButton.isHidden = false
+            //removeAdsButton.isHidden = false
         }
         
         switchColorsButton.isHidden = false
@@ -309,7 +309,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         scoreButton.setTitle("", for: .normal)
         
         if didRemoveAds == false {
-            removeAdsButton.isHidden = false
+            //removeAdsButton.isHidden = false
         }
         
         timerView.setProgress(progress: 1)
@@ -503,7 +503,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
             optionsButton.isHidden = false
             
             if didRemoveAds == false {
-                removeAdsButton.isHidden = false
+                //removeAdsButton.isHidden = false
             }
             
             rulesLabel.isHidden = true
@@ -623,7 +623,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
             helpButton.isHidden = false
 
             if didRemoveAds == false {
-                removeAdsButton.isHidden = false
+                //removeAdsButton.isHidden = false
             }
             
             coverView.isHidden = true
@@ -777,6 +777,9 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         button.titleLabel!.textAlignment = .center
         button.titleLabel!.numberOfLines = 1
         button.addTarget(self, action: #selector(handleRemoveAds), for: .touchUpInside)
+        
+        button.isHidden = true
+        
         return button
     }()
     
@@ -822,7 +825,6 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
     
     lazy var yesButton: UIButton = {
         let button = UIButton()
-//        button.backgroundColor = UIColor(red: 0/255 , green: 183/255 , blue: 4/255 , alpha: 1)
         button.backgroundColor = color
         button.setTitle("REMOVE FULL\nSCREEN ADS\n($0.99)", for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
@@ -852,7 +854,6 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
     
     lazy var cancelButton: UIButton = {
         let button = UIButton()
-//        button.backgroundColor = UIColor(red: 220/255 , green: 34/255 , blue: 2/255 , alpha: 1)
         button.backgroundColor = lightColor
         button.setTitle("CANCEL", for: .normal)
         button.setTitleColor(UIColor.black, for: .normal)
@@ -971,9 +972,9 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
             
             adCounter = 0
             
-            if didRemoveAds == false {
+            //if didRemoveAds == false {
                 interstitial.present(fromRootViewController: self)
-            }
+            //}
         }
         
         touchView.isHidden = true
