@@ -780,9 +780,6 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         button.titleLabel!.textAlignment = .center
         button.titleLabel!.numberOfLines = 1
         button.addTarget(self, action: #selector(handleRemoveAds), for: .touchUpInside)
-        
-        button.isHidden = true
-        
         return button
     }()
     
