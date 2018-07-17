@@ -15,16 +15,19 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
     // IN APP PURCHASE FUNCTIONS
     
     func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
-
-        removeAdsButton.isHidden = true
         
-        didRemoveAds = true
-        
-        let didRemoveAdsDefault = UserDefaults.standard
-        didRemoveAdsDefault.setValue(didRemoveAds, forKey: "didRemoveAds")
-        didRemoveAdsDefault.synchronize()
-        
-        UIAlertView(title: "PURCHASE RESTORED", message: "You've successfully restored your purchase!", delegate: nil, cancelButtonTitle: "OK").show()
+        if queue.transactions.count != 0 {
+            
+            removeAdsButton.isHidden = true
+            
+            didRemoveAds = true
+            
+            let didRemoveAdsDefault = UserDefaults.standard
+            didRemoveAdsDefault.setValue(didRemoveAds, forKey: "didRemoveAds")
+            didRemoveAdsDefault.synchronize()
+            
+            UIAlertView(title: "PURCHASE RESTORED", message: "You've successfully restored your purchase!", delegate: nil, cancelButtonTitle: "OK").show()
+        }
     }
     
     func fetchAvailableProducts()  {
@@ -268,7 +271,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         optionsButton.isHidden = false
 
         if didRemoveAds == false {
-            //removeAdsButton.isHidden = false
+            removeAdsButton.isHidden = false
         }
         
         switchColorsButton.isHidden = false
@@ -309,7 +312,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         scoreButton.setTitle("", for: .normal)
         
         if didRemoveAds == false {
-            //removeAdsButton.isHidden = false
+            removeAdsButton.isHidden = false
         }
         
         timerView.setProgress(progress: 1)
@@ -503,7 +506,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
             optionsButton.isHidden = false
             
             if didRemoveAds == false {
-                //removeAdsButton.isHidden = false
+                removeAdsButton.isHidden = false
             }
             
             rulesLabel.isHidden = true
@@ -623,7 +626,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
             helpButton.isHidden = false
 
             if didRemoveAds == false {
-                //removeAdsButton.isHidden = false
+                removeAdsButton.isHidden = false
             }
             
             coverView.isHidden = true
@@ -972,9 +975,9 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
             
             adCounter = 0
             
-            //if didRemoveAds == false {
+            if didRemoveAds == false {
                 interstitial.present(fromRootViewController: self)
-            //}
+            }
         }
         
         touchView.isHidden = true
