@@ -26,6 +26,8 @@ let startMoveScale: CGFloat = 0.75
 
 let finishRange: CGFloat = 2
 
+let deathsUntilAd: Int = 1
+
 // COLORS
 
 //let backgroundColor = UIColor(red: 0/255 , green: 79/255 , blue: 1/255 , alpha: 1)
@@ -76,6 +78,8 @@ var speedChange: CGFloat = 0.35
 var didRemoveAds: Bool = false
 
 var adCounter: Int = 0
+
+var isFirstOpen: Bool = false
 
 var adViewHolder: UIView = {
     let view = UIView()

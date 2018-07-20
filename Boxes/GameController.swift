@@ -968,13 +968,21 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         
         adCounter += 1
         
-        if adCounter >= 3 {
+        if adCounter >= deathsUntilAd {
             
             adCounter = 0
             
-            if didRemoveAds == false {
-                interstitial.present(fromRootViewController: self)
-            }
+//            if isFirstOpen == true {
+//
+//                isFirstOpen = false
+//
+//            } else {
+            
+                if didRemoveAds == false {
+                    interstitial.present(fromRootViewController: self)
+                }
+//            }
+            
         }
         
         touchView.isHidden = true
@@ -1252,6 +1260,8 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         
         if let savedHighScore = highScoreDefault.value(forKey: "highScore") {
             highScore = savedHighScore as! Int
+        } else {
+            isFirstOpen = true
         }
         
         let moveScaleDefault = UserDefaults.standard
