@@ -538,7 +538,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
     let sensitivitySlider: UISlider = {
         let slider = UISlider()
         slider.minimumValue = 0.5
-        slider.maximumValue = 1
+        slider.maximumValue = 1.5
         slider.isContinuous = true
         slider.tintColor = UIColor.white
         slider.value = Float(moveScale)
@@ -1238,6 +1238,8 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         
         super.viewDidLoad()
         
+        colorCount = Int(arc4random_uniform(UInt32(7)))
+        
         switchColors()
         
         adView.rootViewController = self
@@ -1652,7 +1654,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
     
     @objc func switchColors() {
         
-        if colorCount < 4 {
+        if colorCount < 6 {
             colorCount += 1
         } else {
             colorCount = 0
@@ -1660,7 +1662,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         
         if colorCount == 0 {
             
-            // BLUE
+            // CYAN
             
             lightColor = UIColor(red: 1/255 , green: 190/255 , blue: 255/255 , alpha: 1)
             color = UIColor(red: 0/255 , green: 128/255 , blue: 160/255 , alpha: 1)
@@ -1681,6 +1683,7 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
             lightColor = UIColor(red: 192/255 , green: 112/255 , blue: 241/255 , alpha: 1)
             color = UIColor(red: 129/255 , green: 75/255 , blue: 160/255 , alpha: 1)
             darkColor = UIColor(red: 74/255 , green: 44/255 , blue: 93/255 , alpha: 1)
+            
         } else if colorCount == 3 {
             
             // GREEN
@@ -1688,13 +1691,30 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
             lightColor = UIColor(red: 72/255 , green: 232/255 , blue: 145/255 , alpha: 1)
             color = UIColor(red: 48/255 , green: 152/255 , blue: 93/255 , alpha: 1)
             darkColor = UIColor(red: 29/255 , green: 92/255 , blue: 57/255 , alpha: 1)
-        } else {
             
+        } else if colorCount == 4 {
+            
+            // BLUE
+            
+            lightColor = UIColor(red: 115/255 , green: 151/255 , blue: 255/255 , alpha: 1)
+            color = UIColor(red: 55/255 , green: 87/255 , blue: 220/255 , alpha: 1)
+            darkColor = UIColor(red: 0/255 , green: 16/255 , blue: 81/255 , alpha: 1)
+            
+        }  else if colorCount == 5 {
+            
+            // ORANGE
+            
+            lightColor = UIColor(red: 255/255 , green: 147/255 , blue: 4/255 , alpha: 1)
+            color = UIColor(red: 184/255 , green: 106/255 , blue: 5/255 , alpha: 1)
+            darkColor = UIColor(red: 120/255 , green: 69/255 , blue: 2/255 , alpha: 1)
+            
+        } else {
+
             // RED
             
-            lightColor = UIColor(red: 255/255 , green: 67/255 , blue: 55/255 , alpha: 1)
-            color = UIColor(red: 168/255 , green: 45/255 , blue: 37/255 , alpha: 1)
-            darkColor = UIColor(red: 112/255 , green: 30/255 , blue: 24/255 , alpha: 1)
+            lightColor = UIColor(red: 255/255 , green: 122/255 , blue: 117/255 , alpha: 1)
+            color = UIColor(red: 145/255 , green: 57/255 , blue: 55/255 , alpha: 1)
+            darkColor = UIColor(red: 69/255 , green: 4/255 , blue: 1/255 , alpha: 1)
         }
         
         resumeButton.backgroundColor = color
