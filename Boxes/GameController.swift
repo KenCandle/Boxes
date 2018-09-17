@@ -1382,11 +1382,23 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         gameView.heightAnchor.constraint(equalToConstant: gameViewSideLength).isActive = true
         
         if screenSize.width <= 320 {
-            gameView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 45).isActive = true
+            if #available(iOS 11.0, *) {
+                gameView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 45).isActive = true
+            } else {
+                gameView.topAnchor.constraint(equalTo: view.topAnchor, constant: 45 + UIApplication.shared.statusBarFrame.size.height).isActive = true
+            }
         } else if screenSize.width == 375 && screenSize.height == 812 {
-            gameView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100).isActive = true
+            if #available(iOS 11.0, *) {
+                gameView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100).isActive = true
+            } else {
+                gameView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100 + UIApplication.shared.statusBarFrame.size.height).isActive = true
+            }
         } else {
-            gameView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
+            if #available(iOS 11.0, *) {
+                gameView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
+            } else {
+                gameView.topAnchor.constraint(equalTo: view.topAnchor, constant: 80 + UIApplication.shared.statusBarFrame.size.height).isActive = true
+            }
         }
     }
     
@@ -1396,9 +1408,17 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         scoreButton.bottomAnchor.constraint(equalTo: gameView.topAnchor).isActive = true
         
         if screenSize.width == 375 && screenSize.height == 812 {
-            scoreButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+            if #available(iOS 11.0, *) {
+                scoreButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+            } else {
+                scoreButton.topAnchor.constraint(equalTo: view.topAnchor, constant: UIApplication.shared.statusBarFrame.size.height).isActive = true
+            }
         } else {
-            scoreButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -10).isActive = true
+            if #available(iOS 11.0, *) {
+                scoreButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -10).isActive = true
+            } else {
+                scoreButton.topAnchor.constraint(equalTo: view.topAnchor, constant: -10 + UIApplication.shared.statusBarFrame.size.height).isActive = true
+            }
         }
     }
     
@@ -1627,9 +1647,17 @@ class GameController: UIViewController, GADInterstitialDelegate, SKProductsReque
         adViewHolder.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         if screenSize.width <= 320 || (screenSize.width == 375 && screenSize.height == 812) {
-            adViewHolder.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+            if #available(iOS 11.0, *) {
+                adViewHolder.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+            } else {
+                adViewHolder.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            }
         } else {
-            adViewHolder.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: (320 - screenSize.width) / 2).isActive = true
+            if #available(iOS 11.0, *) {
+                adViewHolder.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: (320 - screenSize.width) / 2).isActive = true
+            } else {
+                adViewHolder.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: (320 - screenSize.width) / 2).isActive = true
+            }
         }
     }
     

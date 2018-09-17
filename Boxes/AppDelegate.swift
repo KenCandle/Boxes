@@ -29,19 +29,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         UIApplication.shared.statusBarStyle = .lightContent
         
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (didAllow, error) in
-            //handle error
+        if #available(iOS 10.0, *) {
+            
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (didAllow, error) in
+                //handle error
+            }
+            
+            UNUserNotificationCenter.current().delegate = self
+
+        } else {
+            // Fallback on earlier versions
         }
-        
-        UNUserNotificationCenter.current().delegate = self
         
         return true
     }
     
+    @available(iOS 10.0, *)
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler(.alert)
     }
     
+    @available(iOS 10.0, *)
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         //
     }
@@ -55,15 +63,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
-        let content = UNMutableNotificationContent()
-        
-        content.title = "Forget about BOXES?"
-        content.body = "How could you..."
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 172800, repeats: false)
-        let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        if #available(iOS 10.0, *) {
+            
+            let content = UNMutableNotificationContent()
+            
+            content.title = "Forget about BOXES?"
+            content.body = "How could you..."
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 172800, repeats: false)
+            let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
+            
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+            
+        } else {
+            // Fallback on earlier versions
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
